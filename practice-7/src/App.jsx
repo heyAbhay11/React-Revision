@@ -5,6 +5,10 @@ const App = () => {
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm()
   console.log(errors)
+
+
+
+  
   const handleFormSubmit = (data) => {
     console.log(data)
     reset()

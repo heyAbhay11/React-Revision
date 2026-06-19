@@ -1,0 +1,13 @@
+import React from 'react'
+
+const Mobile = () => {
+  return (
+    <div>
+      <h1 className='text-2xl'>
+        Mobile
+      </h1>
+    </div>
+  )
+}
+
+export default Mobile

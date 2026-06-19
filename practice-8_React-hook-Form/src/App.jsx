@@ -1,13 +1,34 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
+
 const App = () => {
 
-const {register,handleSubmmit,reset,formState:{errors}} = useForm()
+  const { register, handleSubmit, reset, formState: { errors } } = useForm()
+
+
+
+  const Submitform = (data) => {
+
+      const storedNotes = localStorage.getItem("notes")
+      
+
+     const existingNotes = storedNotes
+    ? JSON.parse(storedNotes)
+    : []
+
+    existingNotes.push(data)
+
+
+    localStorage.setItem("notes",JSON.stringify(existingNotes))
+    console.log(existingNotes)
+
+    reset()
+  }
   
- 
- 
+
+
   return (
-    <div className="min-h-screen bg-gray-500 py-8 px-4">
+    <div className="min-h-screen bg-gray-800 py-8 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -17,21 +38,24 @@ const {register,handleSubmmit,reset,formState:{errors}} = useForm()
 
         {/* Form Container */}
         <div className="bg-yellow-50 rounded-lg shadow-lg p-8">
-          <form 
-          
-          className="space-y-6">
+          <form
+            onSubmit={handleSubmit(Submitform)}
+            className="space-y-6">
             {/* Title Input */}
             <div>
               <label htmlFor="title" className="block text-sm font-semibold text-gray-700 mb-2">
                 Note Title
               </label>
               <input
-              {...register("title",{required:"Title is required"})}
+                {...register("title", {
+                  required: "Title is required", minLength: { value: 3, message: "Title must be at least 3 characters" }
+                })}
                 type="text"
                 id="title"
                 placeholder="Enter your note title..."
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black-500 focus:border-transparent transition"
               />
+              {errors.title && <p className='text-red-600'>{errors.title.message}</p>}
             </div>
 
             {/* Category Select */}
@@ -40,6 +64,7 @@ const {register,handleSubmmit,reset,formState:{errors}} = useForm()
                 Category
               </label>
               <select
+                {...register("category", { required: "Category is required" })}
                 id="category"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black-500 focus:border-transparent transition"
               >
@@ -49,6 +74,22 @@ const {register,handleSubmmit,reset,formState:{errors}} = useForm()
                 <option value="ideas">Ideas</option>
                 <option value="todo">To-Do</option>
               </select>
+              {errors.category && <p className='text-red-600'>{errors.category.message}</p>}
+            </div>
+
+            {/* Password Input */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                Password
+              </label>
+              <input
+                {...register("password", { required: "password is required", pattern: { value: /^[A-Za-z ]+$/, message: "Only alpahbet required" } })}
+                type="password"
+                id="password"
+                placeholder="Enter your password..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black-500 focus:border-transparent transition"
+              />
+              {errors.password && <p className='text-red-600'>{errors.password.message}</p>}
             </div>
 
             {/* Content Textarea */}
@@ -57,11 +98,16 @@ const {register,handleSubmmit,reset,formState:{errors}} = useForm()
                 Note Content
               </label>
               <textarea
+                {...register("content", {
+                  required: "content is requirid",
+                  minLength: { value: 100, message: "content must be at least 100 characters" },
+                })}
                 id="content"
                 placeholder="Write your note here..."
                 rows="8"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black-500 focus:border-transparent transition resize-none"
               ></textarea>
+              {errors.content && <p className='text-red-600'>{errors.content.message}</p>}
             </div>
 
             {/* Buttons */}
